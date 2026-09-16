@@ -21,7 +21,6 @@
   ],
   "exports": {
     "./button": "./src/components/Button.tsx",
-    "./label": "./src/components/Label.tsx",
     "./icons": "./src/icons.ts",
     "./theme": "./src/theme/ThemeProvider.tsx",
     "./theme-script": "./src/theme/themeScript.ts",
