@@ -1,12 +1,12 @@
 # MailFlow Design System
 
-`@mailflow/ui` provides the shared foundation for `mailflow-web` and `mailflow-site`: semantic colors, light and dark palettes, typography, spacing, radii, shadows, motion, Lucide icons, theme management, Button, and Label.
+`@mailflow/ui` provides the shared foundation for `mailflow-web` and `mailflow-site`: semantic colors, light and dark palettes, typography, spacing, radii, shadows, motion, Lucide icons, theme management, and Button.
 
 The reference is the [MailFlow Lovable project](https://lovable.dev/projects/c481592e-bf4d-4e71-a3cc-24366319ec79), including its landing page and inbox. Values were extracted from its source styles and component code. The violet palette, Inter typography, and component proportions are shared; layouts and business behavior belong to the consuming applications.
 
 ## Development
 
-Use Node.js from `.node-version` and Bun from `package.json#packageManager`.
+Use Node.js 24.20.0, as pinned in `.github/workflows/ci.yml`, and Bun from `package.json#packageManager`.
 
 ```sh
 bun install --frozen-lockfile
@@ -23,7 +23,6 @@ This source package ships React/TypeScript and CSS for TypeScript-aware Vite app
 | Import | Responsibility |
 | --- | --- |
 | `@mailflow/ui/button` | Button and its variants |
-| `@mailflow/ui/label` | Semantic form label |
 | `@mailflow/ui/icons` | Named Lucide exports |
 | `@mailflow/ui/theme` | Theme provider and hook |
 | `@mailflow/ui/theme-script` | Synchronous browser theme bootstrap |
@@ -53,7 +52,7 @@ The shared stylesheet registers the package source for Tailwind scanning. Local 
 
 Inter is self-hosted through `@fontsource/inter`, with weights 400, 500, 600, and 700 and features `cv02`, `cv03`, `cv04`, and `cv11`. No Google Fonts request is needed. Use semantic HTML with typography utilities rather than a component for every heading or paragraph.
 
-For server rendering, add `@mailflow/ui` to Vite's `ssr.noExternal` so the framework compiles its source. Applications own their Tailwind integration and runtime configuration. Astro can render Button and Label statically; only interactive controls need hydration.
+For server rendering, add `@mailflow/ui` to Vite's `ssr.noExternal` so the framework compiles its source. Applications own their Tailwind integration and runtime configuration. Astro can render Button statically; only interactive controls need hydration.
 
 ## Theme integration
 
@@ -86,16 +85,15 @@ Call `setTheme('system')` to follow the operating system. Explicit light or dark
 
 ```tsx
 import { Button } from '@mailflow/ui/button'
-import { Label } from '@mailflow/ui/label'
 import { ArrowRight } from '@mailflow/ui/icons'
 
 <Button variant="default" size="lg">Continue <ArrowRight aria-hidden="true" /></Button>
 <Button nativeButton={false} render={<a href="/app" />} variant="outline">Open app</Button>
-<Label htmlFor="email">Email address</Label>
+<label htmlFor="email">Email address</label>
 <input id="email" type="email" />
 ```
 
-Button variants are `default`, `secondary`, `outline`, `ghost`, `destructive`, and `link`. Sizes are `sm` (32px), `default` (36px), `lg` (40px), and `icon` (36px square). Use an accessible name for icon-only controls and hide decorative icons from assistive technology. Base UI's `render` composition replaces Radix's `asChild`; set `nativeButton={false}` for anchors or router links. Label preserves native `htmlFor` semantics. The native input above demonstrates association and is not an exported Input component.
+Button variants are `default`, `secondary`, `outline`, `ghost`, `destructive`, and `link`. Sizes are `sm` (32px), `default` (36px), `lg` (40px), and `icon` (36px square). Use an accessible name for icon-only controls and hide decorative icons from assistive technology. Base UI's `render` composition replaces Radix's `asChild`; set `nativeButton={false}` for anchors or router links. Use native `label` and `htmlFor` for field association. The package does not export Label or Input components.
 
 ## Foundation tokens
 
@@ -129,7 +127,7 @@ Storybook displays the foundation scales and both palettes alongside rendered co
 
 ## Adding shared UI
 
-This repository owns the shadcn source and uses Base UI primitives. `components.json` configures the style, variables, icons, and generation paths. Generate future components here and adapt them to MailFlow before exporting them. The initial scope contains only Button and Label.
+This repository owns the shadcn source and uses Base UI primitives. `components.json` configures the style, variables, icons, and generation paths. Generate future components here and adapt them to MailFlow before exporting them. The initial scope contains only Button. Labels use native HTML.
 
 The `@/*` TypeScript paths support shadcn authoring. Replace generated internal `@/` imports with relative imports before exposing a component: consumers must not inherit these aliases. `src/lib/utils.ts` supplies the `cn` adapter. Review generated changes before overwriting customized files.
 

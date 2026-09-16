@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { Button } from '../src/components/Button'
-import { Label } from '../src/components/Label'
 
 describe('Button', () => {
   it('handles clicks and preserves the disabled boundary', async () => {
@@ -36,19 +35,5 @@ describe('Button', () => {
     expect(link).toHaveAttribute('href', '/inbox')
     expect(link.tagName).toBe('A')
     expect(link).toHaveClass('border-input', 'h-10')
-  })
-})
-
-describe('Label', () => {
-  it('renders a native label with its association intact', () => {
-    render(
-      <>
-        <Label htmlFor="email">Email</Label>
-        <input id="email" />
-      </>,
-    )
-
-    expect(screen.getByText('Email').tagName).toBe('LABEL')
-    expect(screen.getByLabelText('Email')).toHaveAttribute('id', 'email')
   })
 })
