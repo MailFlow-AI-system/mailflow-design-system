@@ -1,0 +1,14 @@
+node_modules/
+dist/
+storybook-static/
+coverage/
+test-results/
+playwright-report/
+*.tgz
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+graphify-out/
+.codex/hooks.json
