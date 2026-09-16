@@ -1,6 +1,6 @@
 # MailFlow Design System
 
-`@mailflow/ui` provides the shared foundation for `mailflow-web` and `mailflow-site`: semantic colors, light and dark palettes, typography, spacing, radii, shadows, motion, Lucide icons, theme management, and Button.
+`@mailflow/ui` provides the shared foundation for `mailflow-web` and `mailflow-site`: semantic colors, light and dark palettes, typography, spacing, radii, shadows, motion, Lucide icons, theme management, and reusable components.
 
 The reference is the [MailFlow Lovable project](https://lovable.dev/projects/c481592e-bf4d-4e71-a3cc-24366319ec79), including its landing page and inbox. Values were extracted from its source styles and component code. The violet palette, Inter typography, and component proportions are shared; layouts and business behavior belong to the consuming applications.
 
@@ -22,7 +22,8 @@ This source package ships React/TypeScript and CSS for TypeScript-aware Vite app
 
 | Import | Responsibility |
 | --- | --- |
-| `@mailflow/ui/button` | Button and its variants |
+| `@mailflow/ui` | All JavaScript and TypeScript exports |
+| `@mailflow/ui/components` | Shared components, variants, and component types |
 | `@mailflow/ui/icons` | Named Lucide exports |
 | `@mailflow/ui/theme` | Theme provider and hook |
 | `@mailflow/ui/theme-script` | Synchronous browser theme bootstrap |
@@ -37,7 +38,7 @@ Install from a full, reviewed commit SHA:
 bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#<full-commit-sha>'
 ```
 
-Commit the manifest and `bun.lock`. Do not release a moving branch, local dependency, or development symlink. During coordinated review, consumers can pin the design-system feature commit; after its approved merge, update to the accepted `development` commit before merging consumers. No registry credentials are required.
+Commit the manifest and `bun.lock`. Do not release a moving branch, local dependency, or development symlink. During coordinated review, consumers can pin the design-system feature commit; after its approved merge, update to the accepted `main` commit before merging consumers. No registry credentials are required.
 
 ## Styles and fonts
 
@@ -84,7 +85,7 @@ Call `setTheme('system')` to follow the operating system. Explicit light or dark
 ## Components and icons
 
 ```tsx
-import { Button } from '@mailflow/ui/button'
+import { Button } from '@mailflow/ui/components'
 import { ArrowRight } from '@mailflow/ui/icons'
 
 <Button variant="default" size="lg">Continue <ArrowRight aria-hidden="true" /></Button>
@@ -127,7 +128,7 @@ Storybook displays the foundation scales and both palettes alongside rendered co
 
 ## Adding shared UI
 
-This repository owns the shadcn source and uses Base UI primitives. `components.json` configures the style, variables, icons, and generation paths. Generate future components here and adapt them to MailFlow before exporting them. The initial scope contains only Button. Labels use native HTML.
+This repository owns the shadcn source and uses Base UI primitives. `components.json` configures the style, variables, icons, and generation paths. Generate future components here, adapt them to MailFlow, and export them through `@mailflow/ui/components`. Labels use native HTML when a shared abstraction adds no behavior.
 
 The `@/*` TypeScript paths support shadcn authoring. Replace generated internal `@/` imports with relative imports before exposing a component: consumers must not inherit these aliases. `src/lib/utils.ts` supplies the `cn` adapter. Review generated changes before overwriting customized files.
 
@@ -135,7 +136,7 @@ Every export needs documentation, a Storybook example, and behavior tests for st
 
 ## Branches and delivery
 
-`main`, `development`, and `staging` begin at the same minimal baseline. Features start from `development`; pull requests target `development`. Promotion and deployment are separate operations. CI Required must pass before a pull request is ready.
+`main` is the only long-lived branch. Feature branches start from `main` and pull requests target `main`. CI Required must pass before a pull request is ready; merging to `main` deploys Storybook through GitHub Pages.
 
 Validate package changes through real imports in both consumers: production builds, first theme paint, reload persistence, navigation, keyboard controls, label association, font loading, and absence of hydration errors. A Storybook build alone does not validate these integrations.
 

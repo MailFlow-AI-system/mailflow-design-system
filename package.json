@@ -13,17 +13,37 @@
   },
   "files": [
     "src",
-    "README.md",
     "THIRD_PARTY_NOTICES.md"
   ],
   "sideEffects": [
     "**/*.css"
   ],
   "exports": {
-    "./button": "./src/components/Button.tsx",
-    "./icons": "./src/icons.ts",
-    "./theme": "./src/theme/ThemeProvider.tsx",
-    "./theme-script": "./src/theme/themeScript.ts",
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./components": {
+      "types": "./src/components/index.ts",
+      "import": "./src/components/index.ts",
+      "default": "./src/components/index.ts"
+    },
+    "./icons": {
+      "types": "./src/icons.ts",
+      "import": "./src/icons.ts",
+      "default": "./src/icons.ts"
+    },
+    "./theme": {
+      "types": "./src/theme/index.ts",
+      "import": "./src/theme/index.ts",
+      "default": "./src/theme/index.ts"
+    },
+    "./theme-script": {
+      "types": "./src/theme/themeScript.ts",
+      "import": "./src/theme/themeScript.ts",
+      "default": "./src/theme/themeScript.ts"
+    },
     "./tokens.css": "./src/styles/tokens.css",
     "./styles.css": "./src/styles/styles.css"
   },
