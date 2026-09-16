@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+@import '../src/styles/styles.css';
+
+@source '../stories';
+@source './preview.tsx';
