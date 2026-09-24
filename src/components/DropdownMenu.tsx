@@ -2,15 +2,7 @@ import { Menu as MenuPrimitive } from '@base-ui/react/menu'
 import * as React from 'react'
 import { Check, ChevronRight } from '../icons'
 
-import { cn } from '../lib/utils'
-
-type ClassName<State> = string | ((state: State) => string | undefined) | undefined
-
-function mergeClassName<State>(base: string, className: ClassName<State>) {
-  return typeof className === 'function'
-    ? (state: State) => cn(base, className(state))
-    : cn(base, className)
-}
+import { cn, mergeClassName } from '../lib/utils'
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />

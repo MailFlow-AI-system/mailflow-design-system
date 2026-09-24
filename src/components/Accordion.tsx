@@ -2,17 +2,13 @@ import { Accordion as AccordionPrimitive } from '@base-ui/react/accordion'
 import { forwardRef } from 'react'
 import { ChevronRight } from '../icons'
 
-import { cn } from '../lib/utils'
+import { mergeClassName } from '../lib/utils'
 
 function Accordion({ className, ...props }: AccordionPrimitive.Root.Props) {
   return (
     <AccordionPrimitive.Root
       data-slot="accordion"
-      className={
-        typeof className === 'function'
-          ? (state) => cn('flex flex-col', className(state))
-          : cn('flex flex-col', className)
-      }
+      className={mergeClassName('flex flex-col', className)}
       {...props}
     />
   )
@@ -23,11 +19,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionPrimitive.Item.Props>(
     <AccordionPrimitive.Item
       ref={ref}
       data-slot="accordion-item"
-      className={
-        typeof className === 'function'
-          ? (state) => cn('border-b last:border-b-0', className(state))
-          : cn('border-b last:border-b-0', className)
-      }
+      className={mergeClassName('border-b last:border-b-0', className)}
       {...props}
     />
   ),
@@ -39,11 +31,7 @@ const AccordionHeader = forwardRef<HTMLHeadingElement, AccordionPrimitive.Header
     <AccordionPrimitive.Header
       ref={ref}
       data-slot="accordion-header"
-      className={
-        typeof className === 'function'
-          ? (state) => cn('flex', className(state))
-          : cn('flex', className)
-      }
+      className={mergeClassName('flex', className)}
       {...props}
     />
   ),
@@ -55,18 +43,10 @@ const AccordionTrigger = forwardRef<HTMLElement, AccordionPrimitive.Trigger.Prop
     <AccordionPrimitive.Trigger
       ref={ref}
       data-slot="accordion-trigger"
-      className={
-        typeof className === 'function'
-          ? (state) =>
-              cn(
-                'flex w-full flex-1 items-center justify-between gap-4 py-4 text-left text-sm font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&[data-panel-open]>svg]:rotate-90',
-                className(state),
-              )
-          : cn(
-              'flex w-full flex-1 items-center justify-between gap-4 py-4 text-left text-sm font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&[data-panel-open]>svg]:rotate-90',
-              className,
-            )
-      }
+      className={mergeClassName(
+        'flex w-full flex-1 items-center justify-between gap-4 py-4 text-left text-sm font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&[data-panel-open]>svg]:rotate-90',
+        className,
+      )}
       {...props}
     >
       {children}
@@ -84,12 +64,10 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionPrimitive.Panel.Pro
     <AccordionPrimitive.Panel
       ref={ref}
       data-slot="accordion-content"
-      className={
-        typeof className === 'function'
-          ? (state) =>
-              cn('overflow-hidden text-sm text-muted-foreground data-[open]:pt-3', className(state))
-          : cn('overflow-hidden text-sm text-muted-foreground data-[open]:pt-3', className)
-      }
+      className={mergeClassName(
+        'overflow-hidden text-sm text-muted-foreground data-[open]:pt-3',
+        className,
+      )}
       {...props}
     >
       {children}

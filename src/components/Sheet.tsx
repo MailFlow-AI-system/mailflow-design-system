@@ -2,15 +2,7 @@ import { Dialog as DialogPrimitive } from '@base-ui/react/dialog'
 import * as React from 'react'
 import { X } from '../icons'
 
-import { cn } from '../lib/utils'
-
-type ClassName<State> = string | ((state: State) => string | undefined) | undefined
-
-function mergeClassName<State>(base: string, className: ClassName<State>) {
-  return typeof className === 'function'
-    ? (state: State) => cn(base, className(state))
-    : cn(base, className)
-}
+import { cn, mergeClassName } from '../lib/utils'
 
 function Sheet({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="sheet" {...props} />
