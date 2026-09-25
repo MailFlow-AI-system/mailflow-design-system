@@ -3,6 +3,7 @@ import * as React from 'react'
 import { X } from '../icons'
 
 import { cn, mergeClassName } from '../lib/utils'
+import type { SheetContentProps, SheetOverlayProps, SheetSide, SheetVariant } from './types/Sheet'
 
 function Sheet({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="sheet" {...props} />
@@ -37,13 +38,15 @@ const SheetPortal = ({ ...props }: DialogPrimitive.Portal.Props) => (
 )
 SheetPortal.displayName = 'SheetPortal'
 
-const SheetOverlay = React.forwardRef<HTMLDivElement, DialogPrimitive.Backdrop.Props>(
-  ({ className, ...props }, ref) => (
+const SheetOverlay = React.forwardRef<HTMLDivElement, SheetOverlayProps>(
+  ({ className, variant = 'default', ...props }, ref) => (
     <DialogPrimitive.Backdrop
       ref={ref}
       data-slot="sheet-overlay"
       className={mergeClassName(
-        'fixed inset-0 z-50 bg-foreground/50 transition-opacity data-[closed]:opacity-0 data-[open]:opacity-100',
+        variant === 'sidebar'
+          ? 'fixed inset-0 z-50 bg-black/60 transition-opacity duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0'
+          : 'fixed inset-0 z-50 bg-foreground/50 transition-opacity data-[closed]:opacity-0 data-[open]:opacity-100',
         className,
       )}
       {...props}
@@ -52,37 +55,50 @@ const SheetOverlay = React.forwardRef<HTMLDivElement, DialogPrimitive.Backdrop.P
 )
 SheetOverlay.displayName = 'SheetOverlay'
 
-type SheetSide = 'top' | 'right' | 'bottom' | 'left'
-
-type SheetContentProps = DialogPrimitive.Popup.Props & {
-  side?: SheetSide
-}
-
 const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
-  ({ children, className, side = 'right', ...props }, ref) => (
-    <SheetPortal>
-      <SheetOverlay />
-      <DialogPrimitive.Popup
-        ref={ref}
-        data-slot="sheet-content"
-        data-side={side}
-        className={mergeClassName(
-          'fixed z-50 flex max-h-screen flex-col gap-4 bg-background p-6 text-foreground shadow-lg outline-none transition-transform data-[closed]:duration-300 data-[open]:duration-500 data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:border-t data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:border-b sm:max-w-lg',
-          className,
-        )}
-        {...props}
-      >
-        {children}
-        <DialogPrimitive.Close
-          data-slot="sheet-close"
-          className="absolute right-4 top-4 rounded-sm opacity-70 outline-none transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none"
-          aria-label="Close"
+  (
+    { children, className, side = 'right', showCloseButton = true, variant = 'default', ...props },
+    ref,
+  ) => {
+    const closeRef = React.useRef<HTMLButtonElement>(null)
+    const isSidebar = variant === 'sidebar'
+
+    return (
+      <SheetPortal>
+        <SheetOverlay variant={variant} />
+        <DialogPrimitive.Popup
+          ref={ref}
+          data-slot="sheet-content"
+          data-side={side}
+          data-variant={variant}
+          initialFocus={isSidebar && showCloseButton ? closeRef : undefined}
+          className={mergeClassName(
+            isSidebar
+              ? 'fixed z-50 flex flex-col bg-sidebar text-sm text-sidebar-foreground shadow-xl transition duration-200 ease-in-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:border-r data-[side=left]:data-[starting-style]:-translate-x-full data-[side=left]:data-[ending-style]:-translate-x-full data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:border-l'
+              : 'fixed z-50 flex max-h-screen flex-col gap-4 bg-background p-6 text-foreground shadow-lg outline-none transition-transform data-[closed]:duration-300 data-[open]:duration-500 data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:border-t data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:border-b sm:max-w-lg',
+            className,
+          )}
+          {...props}
         >
-          <X aria-hidden="true" className="size-4" />
-        </DialogPrimitive.Close>
-      </DialogPrimitive.Popup>
-    </SheetPortal>
-  ),
+          {children}
+          {isSidebar && !showCloseButton ? null : (
+            <DialogPrimitive.Close
+              ref={isSidebar ? closeRef : undefined}
+              data-slot="sheet-close"
+              className={
+                isSidebar
+                  ? 'absolute top-3 right-3 inline-flex size-7 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent'
+                  : 'absolute right-4 top-4 rounded-sm opacity-70 outline-none transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none'
+              }
+              aria-label={isSidebar ? 'Fechar menu' : 'Close'}
+            >
+              <X aria-hidden="true" className="size-4" />
+            </DialogPrimitive.Close>
+          )}
+        </DialogPrimitive.Popup>
+      </SheetPortal>
+    )
+  },
 )
 SheetContent.displayName = 'SheetContent'
 
@@ -134,7 +150,7 @@ const SheetDescription = React.forwardRef<HTMLParagraphElement, DialogPrimitive.
 )
 SheetDescription.displayName = 'SheetDescription'
 
-export type { SheetContentProps, SheetSide }
+export type { SheetContentProps, SheetOverlayProps, SheetSide, SheetVariant }
 export {
   Sheet,
   SheetClose,

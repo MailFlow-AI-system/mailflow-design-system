@@ -25,7 +25,24 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from './DropdownMenu'
-export type { SheetContentProps, SheetSide } from './Sheet'
+export type {
+  SelectContentProps,
+  SelectItemProps,
+  SelectScrollDownButtonProps,
+  SelectScrollUpButtonProps,
+  SelectTriggerProps,
+} from './Select'
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectTrigger,
+  SelectValue,
+} from './Select'
+export type { SheetContentProps, SheetOverlayProps, SheetSide, SheetVariant } from './Sheet'
 export {
   Sheet,
   SheetClose,
@@ -38,3 +55,38 @@ export {
   SheetTitle,
   SheetTrigger,
 } from './Sheet'
+export type {
+  SidebarContextProps,
+  SidebarGroupActionProps,
+  SidebarGroupLabelProps,
+  SidebarMenuActionProps,
+  SidebarMenuButtonProps,
+  SidebarMenuSubButtonProps,
+  SidebarProps,
+  SidebarProviderProps,
+  SidebarTriggerProps,
+} from './Sidebar'
+export {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
+} from './Sidebar'

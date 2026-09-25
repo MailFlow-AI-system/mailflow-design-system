@@ -46,3 +46,27 @@ export const Playground: Story = {
     </Sheet>
   ),
 }
+
+export const SidebarVariant: Story = {
+  render: () => (
+    <Sheet>
+      <SheetTrigger className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground">
+        Open sidebar
+      </SheetTrigger>
+      <SheetContent variant="sidebar" side="left">
+        <SheetHeader className="sr-only">
+          <SheetTitle>Application navigation</SheetTitle>
+          <SheetDescription>Navigate through the MailFlow application.</SheetDescription>
+        </SheetHeader>
+        <nav aria-label="Application navigation" className="grid gap-2 p-4">
+          <a className="rounded-md px-3 py-2 hover:bg-sidebar-accent" href="#inbox">
+            Inbox
+          </a>
+          <a className="rounded-md px-3 py-2 hover:bg-sidebar-accent" href="#settings">
+            Settings
+          </a>
+        </nav>
+      </SheetContent>
+    </Sheet>
+  ),
+}
