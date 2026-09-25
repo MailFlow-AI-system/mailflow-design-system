@@ -32,19 +32,15 @@ This private source package ships React/TypeScript and CSS for TypeScript-aware 
 
 Import the required subpath. Do not copy shared components into an application or import unpublished source paths.
 
-For a released integration, install the exact Git tag after it exists:
+Install the exact Git tag after the design-system release exists:
 
 ```sh
 bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#v0.1.0'
 ```
 
-While a design-system change is still unreleased, a consumer feature branch may temporarily pin its full commit SHA to test the integration:
+For new shared UI, finish and review the design-system pull request first. After it merges, create its tag and GitHub Release. Then integrate the released component in the consumer application, pin the exact tag in its manifest and lockfile, and validate that application's behavior before merging its pull request. A design-system commit on `main` is not a release until the tag and GitHub Release exist.
 
-```sh
-bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#<full-commit-sha>'
-```
-
-Before merging that consumer pull request, replace the SHA with the matching released `vX.Y.Z` tag and update its lockfile. If the tag has not been created, keep the consumer pull request open. New consumer integrations do not merge with a commit SHA as their final dependency pin. Existing SHA pins are migrated in separate tasks after the release; this policy does not change them in this repository. Do not pin a moving branch, local dependency, or development symlink. No registry credentials are required.
+New consumer integrations use release tags, not commit SHAs. Existing SHA pins are migrated in separate tasks after a release; this repository does not change them. Do not pin a moving branch, local dependency, or development symlink. No registry credentials are required.
 
 ## Styles and fonts
 
@@ -144,7 +140,7 @@ Every export needs documentation, a Storybook example, and behavior tests for st
 
 `main` is the only long-lived branch. Feature branches start from `main` and pull requests target `main`. CI Required must pass before a pull request is ready; merging to `main` deploys Storybook through GitHub Pages.
 
-Each pull request records its public-contract impact, proposed SemVer impact, and a short release note in the PR template. Update documentation, Storybook stories, and behavior tests when the affected public behavior requires them; explain when a check does not apply. A release PR may collect notes from several change PRs, but its version and changelog must be reviewed before merge.
+Each pull request records its public-contract impact, proposed SemVer impact, and a short release note in the PR template. A pull request that changes public package behavior, including components, variants, tokens, styles, or themes, includes the library version and matching changelog for that release, alongside the affected documentation, Storybook stories, and behavior tests. Review these together before merging to `main`; explain when a check does not apply. Changes with no package release impact may keep the current version and omit a new changelog.
 
 The deployed Storybook follows the latest merged `main`; it is a live catalog, not a versioned release or snapshot. Release-specific notes are kept in `changelogs/<version>/CHANGELOG.md` and linked from the matching GitHub Release.
 
@@ -154,7 +150,7 @@ The package declares `0.1.0` as its initial baseline. That version declaration a
 
 Before `1.0.0`, the public API is not stable. Under this repository's `0.x` policy, fixes that do not change the public API increment the patch version; new capabilities increment the minor version. A minor version may include a breaking change before `1.0.0`, and the changelog must call it out clearly. Adopt `1.0.0` only after an explicit decision that the package has reached its stable/MVP boundary. From `1.0.0` onward, compatible fixes increment patch, compatible features increment minor, and breaking changes increment major.
 
-For `0.1.0`, keep the initial baseline version in `package.json` and include `changelogs/0.1.0/CHANGELOG.md` in the pull request. For each later release, update `package.json#version` and add `changelogs/<version>/CHANGELOG.md` in the same pull request. Review the changelog as part of that pull request. After the approved commit merges to `main`, create the matching `v<version>` tag on that exact commit and publish a GitHub Release linking to its changelog. Tag creation is a separate step after merge: a tag is a Git reference separate from the `main` branch, so creating or pushing the tag does not require a push to `main`. The current repository workflow does not create release tags automatically.
+For `0.1.0`, keep the initial baseline version in `package.json` and include `changelogs/0.1.0/CHANGELOG.md` in the pull request. For each later release, update `package.json#version` and add `changelogs/<version>/CHANGELOG.md` in the same design-system pull request as the package change. Review the changelog before merge. After the approved commit merges to `main`, create the matching `v<version>` tag on that exact commit and publish a GitHub Release linking to its changelog. Tag creation is a separate step after merge: a tag is a Git reference separate from the `main` branch, so creating or pushing the tag does not require a push to `main`. The current repository workflow does not create release tags automatically. Consumer integration begins after this release step.
 
 Consumers learn about changes through the pull request, version changelog, and GitHub Release. Dependency installation does not provide a custom terminal notice or automatically migrate consumer pins; each consuming application reviews and updates its dependency separately.
 
@@ -162,7 +158,7 @@ When a consumer integrates a package change, validate it through real imports th
 
 ## Listening
 
-A separate source package with exact Git tag pinning supports independently managed frontends without introducing a registry release process. Full commit SHAs remain available for temporary integration review before a release. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
+A separate source package with exact Git tag pinning supports independently managed frontends without introducing a registry release process. Releasing the design system before consumer integration keeps the reviewed package contract and application dependency aligned. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
 
 Base UI supplies interactive primitives while shadcn supplies editable structure, keeping one MailFlow implementation per shared control. More components and product patterns can follow when screens require them.
 

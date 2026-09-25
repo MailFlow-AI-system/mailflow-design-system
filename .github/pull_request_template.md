@@ -30,11 +30,12 @@ N/A
 
 - [ ] `bun run check`
 - [ ] Browser checks for affected UI behavior: both palettes, keyboard interaction, and responsive catalog; explain N/A for docs-only changes
+- [ ] Package version and matching changelog included for public package changes; explain N/A when no package release is needed
 - [ ] Docs and Storybook updated for public behavior changes; explain N/A when unaffected
-- [ ] Relevant existing consumers validated when their integration is affected; explain N/A when none are affected
+- [ ] Existing consumers checked when this change can affect them; explain N/A when none are affected
 - [ ] Migration guidance added for breaking changes; explain N/A when there is no breaking change
 
-<!-- mailflow-web does not currently declare @mailflow/ui; include it in consumer validation only after adoption. -->
+<!-- Publish the design-system tag and GitHub Release before starting a new consumer integration. mailflow-web does not currently declare @mailflow/ui; include it in existing-consumer validation only after adoption. -->
 
 ### Listening
 
