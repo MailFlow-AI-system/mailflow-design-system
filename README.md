@@ -1,8 +1,8 @@
 # MailFlow Design System
 
-`@mailflow/ui` provides the shared foundation for `mailflow-web` and `mailflow-site`: semantic colors, light and dark palettes, typography, spacing, radii, shadows, motion, Lucide icons, theme management, and reusable components.
+`@mailflow/ui` is a private, source-based React package for shared MailFlow design foundations: semantic colors, light and dark palettes, typography, spacing, radii, shadows, motion, Lucide icons, theme management, and reusable components. It is not published to a package registry.
 
-The reference is the [MailFlow Lovable project](https://lovable.dev/projects/c481592e-bf4d-4e71-a3cc-24366319ec79), including its landing page and inbox. Values were extracted from its source styles and component code. The violet palette, Inter typography, and component proportions are shared; layouts and business behavior belong to the consuming applications.
+The reference is the [MailFlow Prototype project](https://github.com/mateusmenesesDev/mailflow-ai-suite), including its landing page and inbox. Values were extracted from its source styles and component code. The violet palette, Inter typography, and component proportions are shared; layouts and business behavior belong to the consuming applications.
 
 ## Development
 
@@ -18,7 +18,7 @@ Storybook runs on port 6006. `bun run build` produces `storybook-static/` withou
 
 ## Package contract
 
-This source package ships React/TypeScript and CSS for TypeScript-aware Vite applications, without a generated JavaScript distribution or install-time build. React, React DOM, and Tailwind CSS 4 are peer dependencies owned by the host.
+This private source package ships React/TypeScript and CSS for TypeScript-aware Vite applications, without a generated JavaScript distribution or install-time build. One SemVer version in `package.json` covers the complete `@mailflow/ui` export surface, including every subpath and stylesheet. React, React DOM, and Tailwind CSS 4 are peer dependencies owned by the host.
 
 | Import | Responsibility |
 | --- | --- |
@@ -32,13 +32,19 @@ This source package ships React/TypeScript and CSS for TypeScript-aware Vite app
 
 Import the required subpath. Do not copy shared components into an application or import unpublished source paths.
 
-Install from a full, reviewed commit SHA:
+Install from Git:
 
 ```sh
 bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#<full-commit-sha>'
 ```
 
-Commit the manifest and `bun.lock`. Do not release a moving branch, local dependency, or development symlink. During coordinated review, consumers can pin the design-system feature commit; after its approved merge, update to the accepted `main` commit before merging consumers. No registry credentials are required.
+Use a full commit SHA for review and integration work. After a release tag exists, the release pin is the exact `vX.Y.Z` tag, for example:
+
+```sh
+bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#v0.1.0'
+```
+
+Consumer manifest changes remain separate migration tasks. Until those are planned, keep existing consumer pins unchanged; when a consumer integration is reviewed, pin a full SHA during review or the exact release tag after it exists. Do not pin a moving branch, local dependency, or development symlink. No registry credentials are required.
 
 ## Styles and fonts
 
@@ -134,18 +140,32 @@ The `@/*` TypeScript paths support shadcn authoring. Replace generated internal 
 
 Every export needs documentation, a Storybook example, and behavior tests for state or interaction. Keep routing, authentication, APIs, analytics, and layouts in the applications. Preserve `THIRD_PARTY_NOTICES.md`.
 
-## Branches and delivery
+## Pull requests and delivery
 
 `main` is the only long-lived branch. Feature branches start from `main` and pull requests target `main`. CI Required must pass before a pull request is ready; merging to `main` deploys Storybook through GitHub Pages.
 
-Validate package changes through real imports in both consumers: production builds, first theme paint, reload persistence, navigation, keyboard controls, label association, font loading, and absence of hydration errors. A Storybook build alone does not validate these integrations.
+Each pull request records its public-contract impact, proposed SemVer impact, and a short release note in the PR template. Update documentation, Storybook stories, and behavior tests when the affected public behavior requires them; explain when a check does not apply. A release PR may collect notes from several change PRs, but its version and changelog must be reviewed before merge.
+
+The deployed Storybook follows the latest merged `main`; it is a live catalog, not a versioned release or snapshot. Release-specific notes are kept in `changelogs/<version>/CHANGELOG.md` and linked from the matching GitHub Release.
+
+## Versioning and releases
+
+The package declares `0.1.0` as its initial baseline. That version declaration alone does not constitute a release; `0.1.0` is formally released when the `v0.1.0` tag and matching GitHub Release exist.
+
+Before `1.0.0`, the public API is not stable. Under this repository's `0.x` policy, fixes that do not change the public API increment the patch version; new capabilities increment the minor version. A minor version may include a breaking change before `1.0.0`, and the changelog must call it out clearly. Adopt `1.0.0` only after an explicit decision that the package has reached its stable/MVP boundary. From `1.0.0` onward, compatible fixes increment patch, compatible features increment minor, and breaking changes increment major.
+
+For `0.1.0`, keep the initial baseline version in `package.json` and include `changelogs/0.1.0/CHANGELOG.md` in the pull request. For each later release, update `package.json#version` and add `changelogs/<version>/CHANGELOG.md` in the same pull request. Review the changelog as part of that pull request. After the approved commit merges to `main`, create the matching `v<version>` tag on that exact commit and publish a GitHub Release linking to its changelog. Tag creation is a separate step after merge: a tag is a Git reference separate from the `main` branch, so creating or pushing the tag does not require a push to `main`. The current repository workflow does not create release tags automatically.
+
+Consumers learn about changes through the pull request, version changelog, and GitHub Release. Dependency installation does not provide a custom terminal notice or automatically migrate consumer pins; each consuming application reviews and updates its dependency separately.
+
+When a consumer integrates a package change, validate it through real imports there: production builds, first theme paint, reload persistence, navigation, keyboard controls, label association, font loading, and absence of hydration errors. A Storybook build alone does not validate an application integration.
 
 ## Listening
 
-A separate source package pinned by Git SHA serves two independent frontends without introducing a registry release process. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
+A separate source package with Git SHA pinning supports independently managed frontends without introducing a registry release process. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
 
 Base UI supplies interactive primitives while shadcn supplies editable structure, keeping one MailFlow implementation per shared control. More components and product patterns can follow when screens require them.
 
 The reference's destructive button failed WCAG AA normal-text contrast in browser checks: 4.29:1 in light mode and 3.83:1 in dark mode. Its OKLCH lightness is reduced to 0.58 in both palettes, retaining the source chroma and hue. The adjusted rendered variants pass the same Axe check; the remaining palette values retain the reference.
 
-Both applications default to dark and support light, dark, or system preference. A shared browser store allows independent Astro islands to observe the same selection; a synchronous bootstrap establishes the document palette before hydration. Preferences remain local to each origin. Cross-domain synchronization requires a separate product decision.
+The package defaults to dark and supports light, dark, or system preference. A shared browser store allows independent Astro islands to observe the same selection; a synchronous bootstrap establishes the document palette before hydration. Preferences remain local to each origin. Cross-domain synchronization requires a separate product decision.
