@@ -20,4 +20,21 @@ describe('Sheet', () => {
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(screen.queryByRole('heading', { name: 'Navigation' })).not.toBeInTheDocument()
   })
+
+  it('supports the sidebar variant without changing the default sheet contract', () => {
+    render(
+      <Sheet>
+        <SheetTrigger>Open sidebar</SheetTrigger>
+        <SheetContent variant="sidebar" side="left">
+          <SheetTitle>Application navigation</SheetTitle>
+        </SheetContent>
+      </Sheet>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open sidebar' }))
+
+    const content = screen.getByRole('dialog')
+    expect(content).toHaveAttribute('data-variant', 'sidebar')
+    expect(screen.getByRole('button', { name: 'Fechar menu' })).toBeVisible()
+  })
 })
