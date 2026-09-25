@@ -32,19 +32,19 @@ This private source package ships React/TypeScript and CSS for TypeScript-aware 
 
 Import the required subpath. Do not copy shared components into an application or import unpublished source paths.
 
-Install from Git:
-
-```sh
-bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#<full-commit-sha>'
-```
-
-Use a full commit SHA for review and integration work. After a release tag exists, the release pin is the exact `vX.Y.Z` tag, for example:
+For a released integration, install the exact Git tag after it exists:
 
 ```sh
 bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#v0.1.0'
 ```
 
-Consumer manifest changes remain separate migration tasks. Until those are planned, keep existing consumer pins unchanged; when a consumer integration is reviewed, pin a full SHA during review or the exact release tag after it exists. Do not pin a moving branch, local dependency, or development symlink. No registry credentials are required.
+While a design-system change is still unreleased, a consumer feature branch may temporarily pin its full commit SHA to test the integration:
+
+```sh
+bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#<full-commit-sha>'
+```
+
+Before merging that consumer pull request, replace the SHA with the matching released `vX.Y.Z` tag and update its lockfile. If the tag has not been created, keep the consumer pull request open. New consumer integrations do not merge with a commit SHA as their final dependency pin. Existing SHA pins are migrated in separate tasks after the release; this policy does not change them in this repository. Do not pin a moving branch, local dependency, or development symlink. No registry credentials are required.
 
 ## Styles and fonts
 
@@ -162,7 +162,7 @@ When a consumer integrates a package change, validate it through real imports th
 
 ## Listening
 
-A separate source package with Git SHA pinning supports independently managed frontends without introducing a registry release process. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
+A separate source package with exact Git tag pinning supports independently managed frontends without introducing a registry release process. Full commit SHAs remain available for temporary integration review before a release. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
 
 Base UI supplies interactive primitives while shadcn supplies editable structure, keeping one MailFlow implementation per shared control. More components and product patterns can follow when screens require them.
 
