@@ -25,6 +25,8 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from './DropdownMenu'
+export type { InputProps } from './Input'
+export { Input } from './Input'
 export type {
   SelectContentProps,
   SelectItemProps,

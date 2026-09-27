@@ -87,16 +87,16 @@ Call `setTheme('system')` to follow the operating system. Explicit light or dark
 ## Components and icons
 
 ```tsx
-import { Button } from '@mailflow/ui/components'
+import { Button, Input } from '@mailflow/ui/components'
 import { ArrowRight } from '@mailflow/ui/icons'
 
 <Button variant="default" size="lg">Continue <ArrowRight aria-hidden="true" /></Button>
 <Button nativeButton={false} render={<a href="/app" />} variant="outline">Open app</Button>
 <label htmlFor="email">Email address</label>
-<input id="email" type="email" />
+<Input id="email" type="email" />
 ```
 
-Button variants are `default`, `secondary`, `outline`, `ghost`, `destructive`, and `link`. Sizes are `sm` (32px), `default` (36px), `lg` (40px), and `icon` (36px square). Use an accessible name for icon-only controls and hide decorative icons from assistive technology. Base UI's `render` composition replaces Radix's `asChild`; set `nativeButton={false}` for anchors or router links. Use native `label` and `htmlFor` for field association. The package does not export Label or Input components.
+Button variants are `default`, `secondary`, `outline`, `ghost`, `destructive`, and `link`. Sizes are `sm` (32px), `default` (36px), `lg` (40px), and `icon` (36px square). Use an accessible name for icon-only controls and hide decorative icons from assistive technology. Base UI's `render` composition replaces Radix's `asChild`; set `nativeButton={false}` for anchors or router links. `Input` wraps a native input and accepts its standard HTML props. Use native `label` and `htmlFor` for field association; the package does not export a Label component.
 
 ## Foundation tokens
 
@@ -130,7 +130,7 @@ Storybook displays the foundation scales and both palettes alongside rendered co
 
 ## Adding shared UI
 
-This repository owns the shadcn source and uses Base UI primitives. `components.json` configures the style, variables, icons, and generation paths. Generate future components here, adapt them to MailFlow, and export them through `@mailflow/ui/components`. Labels use native HTML when a shared abstraction adds no behavior.
+This repository owns the shadcn source and uses Base UI primitives. `components.json` configures the style, variables, icons, and generation paths. Generate future components here, adapt them to MailFlow, and export them through `@mailflow/ui/components`. Form controls use their native HTML elements when they need no additional interaction behavior; field labels stay native HTML.
 
 The `@/*` TypeScript paths support shadcn authoring. Replace generated internal `@/` imports with relative imports before exposing a component: consumers must not inherit these aliases. `src/lib/utils.ts` supplies the `cn` adapter. Review generated changes before overwriting customized files.
 
@@ -161,6 +161,8 @@ When a consumer integrates a package change, validate it through real imports th
 A separate source package with exact Git tag pinning supports independently managed frontends without introducing a registry release process. Releasing the design system before consumer integration keeps the reviewed package contract and application dependency aligned. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
 
 Base UI supplies interactive primitives while shadcn supplies editable structure, keeping one MailFlow implementation per shared control. More components and product patterns can follow when screens require them.
+
+`Input` is a native `<input>` styled with the shared semantic tokens, preserving browser form, keyboard, disabled, and ARIA behavior. Native `<label>` remains the field association API; a Base UI wrapper or Label abstraction would add no behavior here. Consumer integration follows the approved `0.3.0` release.
 
 The reference's destructive button failed WCAG AA normal-text contrast in browser checks: 4.29:1 in light mode and 3.83:1 in dark mode. Its OKLCH lightness is reduced to 0.58 in both palettes, retaining the source chroma and hue. The adjusted rendered variants pass the same Axe check; the remaining palette values retain the reference.
 
