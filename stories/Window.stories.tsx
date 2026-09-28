@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useId, useRef, useState } from 'react'
+import { userEvent, within } from 'storybook/test'
 import {
   AlertDialog,
   AlertDialogClose,
@@ -77,7 +78,7 @@ function Example({
   )
   const [open, setOpen] = useState(defaultOpen)
   const [dirty, setDirty] = useState(initiallyDirty)
-  const [confirm, setConfirm] = useState(initiallyDirty)
+  const [confirm, setConfirm] = useState(false)
   const [cc, setCc] = useState(false)
   const [mobileAssistant, setMobileAssistant] = useState(false)
   const [bold, setBold] = useState(false)
@@ -303,5 +304,12 @@ export const Normal: Story = { render: () => <Example /> }
 export const Closed: Story = { render: () => <Example defaultOpen={false} /> }
 export const Minimized: Story = { render: () => <Example initialState="minimized" /> }
 export const Maximized: Story = { render: () => <Example initialState="maximized" /> }
-export const CloseConfirmation: Story = { render: () => <Example initiallyDirty /> }
+export const CloseConfirmation: Story = {
+  render: () => <Example initiallyDirty />,
+  play: async ({ canvasElement }) => {
+    const surface = within(canvasElement.ownerDocument.body)
+    await userEvent.click(await surface.findByRole('button', { name: 'Fechar janela' }))
+    await surface.findByRole('alertdialog', { name: 'Fechar sem salvar?' })
+  },
+}
 export const WithoutAssistant: Story = { render: () => <Example withAssistant={false} /> }
