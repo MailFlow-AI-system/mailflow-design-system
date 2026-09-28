@@ -167,3 +167,130 @@ Base UI supplies interactive primitives while shadcn supplies editable structure
 The reference's destructive button failed WCAG AA normal-text contrast in browser checks: 4.29:1 in light mode and 3.83:1 in dark mode. Its OKLCH lightness is reduced to 0.58 in both palettes, retaining the source chroma and hue. The adjusted rendered variants pass the same Axe check; the remaining palette values retain the reference.
 
 The package defaults to dark and supports light, dark, or system preference. A shared browser store allows independent Astro islands to observe the same selection; a synchronous bootstrap establishes the document palette before hydration. Preferences remain local to each origin. Cross-domain synchronization requires a separate product decision.
+
+## Persistent workspace windows (0.4.0)
+
+`Window` is a generic modal workspace independent of Sidebar and the application shell. Compose its optional controls, body, toolbar, and auxiliary panels in the consuming feature. It contains no recipient, subject, editor, draft, authentication, sending, or AI rules.
+
+| Export | Public contract |
+| --- | --- |
+| `Window` / `WindowProps` | `open`, `defaultOpen` (false), `onOpenChange(open, details)`; `state`, `defaultState` (normal), `onStateChange(state)`. Controlled and uncontrolled operation. |
+| `WindowState` | `normal`, `minimized`, `maximized`. Logical open state is independent of size state. |
+| `WindowOpenChangeDetails` | `reason` (Base UI Dialog reason) and `cancel()`. Consumers intercept close here and present confirmation when their data requires it. |
+| `WindowTrigger` / `WindowTriggerProps` | Base UI trigger props, ref, and `render` composition; reopens or restores a minimized window. Use one trigger per window. |
+| `WindowContent` / `WindowContentProps` | Base UI popup props including ref, `initialFocus`, `finalFocus`, and `className`. Persistent portal, modal focus management, centered 896px maximum width, viewport height cap, and maximized geometry. |
+| `WindowHeader`, `WindowBody` | Native div attributes and `className`; header boundary and scrollable body. Place optional sections and footer actions inside the body. |
+| `WindowTitle`, `WindowDescription` | Base UI title/description props and `className`; provide a title for every window and an optional useful description. |
+| `WindowMinimize`, `WindowMaximize`, `WindowRestore` / `WindowControlProps` | Button props. Named default controls, replaceable children and accessible names. Maximize toggles normal/maximized; restore returns to the state preceding minimize. |
+| `WindowMinimized` / `WindowMinimizedProps` | Native section attributes plus required `aria-label`; a nonmodal region at bottom right. Compose a `WindowRestore` here whenever minimizing is available, and optionally `WindowClose`. |
+| `WindowClose` / `WindowCloseProps` | Base UI close props and `render`; requests cancellable logical close in every size state. |
+| `Toolbar` / `ToolbarProps` | Base UI toolbar props with required `aria-label`; arrows, roving tab stop, Home/End for toolbar buttons, horizontal/vertical orientation and looping. |
+| `ToolbarButton` / `ToolbarButtonProps` | Base UI toolbar button props and `render`. Consumers own `aria-label`, `aria-pressed`, and activation. Disabled controls remain discoverable by arrows by default; use `focusableWhenDisabled={false}` to skip them. |
+| `ToolbarSeparator` / `ToolbarSeparatorProps` | Base UI separator props; defaults to the opposite of toolbar orientation. |
+| `AlertDialog` / `AlertDialogProps` | Base UI alert dialog root, controlled or uncontrolled. No implicit confirmation policy. |
+| `AlertDialogTrigger`, `AlertDialogClose` | Base UI trigger/close props and `render`, exported corresponding `*Props` types. The feature decides which close button confirms an action. |
+| `AlertDialogContent`, `AlertDialogTitle`, `AlertDialogDescription` | Styled Base UI popup/title/description and corresponding `*Props` types. `initialFocus` and `finalFocus` configure the safe action and return target. |
+
+All components and types above are available from `@mailflow/ui/components` and the package root. Icons are available from `@mailflow/ui/icons` and the root. No new Button/Input variant or dependency is required; existing contracts and defaults are preserved.
+
+Normal and maximized windows trap Tab/Shift+Tab, lock page scroll, and make the outside page unavailable. Outside presses do not close a workspace. Escape and `WindowClose` both request a cancellable close. Minimized windows release the modal lock and move focus to `WindowRestore`; restoring normally returns to the last content focus unless the consumer supplies `initialFocus`. Closing returns to the trigger, including a minimized close. Toolbar controls form one Tab stop with arrow navigation and Home/End; consumers using editable inputs inside a toolbar retain native Home/End behavior. Default control labels are English; override `aria-label` for localization.
+
+Size transitions preserve the same mounted content, native input values and selections, and child component state. Closing also keeps content mounted. The feature decides when to reset data (for example by changing a content key after an explicit discard), and owns persistence beyond a `Window` unmount or navigation. The minimized region is not a dialog or a focus trap.
+
+```tsx
+import { useRef, useState } from 'react'
+import {
+  AlertDialog, AlertDialogClose, AlertDialogContent, AlertDialogDescription,
+  AlertDialogTitle, Button, Input, Window, WindowBody, WindowClose,
+  WindowContent, WindowHeader, WindowMaximize, WindowMinimize,
+  WindowMinimized, WindowRestore, WindowTitle, WindowTrigger,
+} from '@mailflow/ui/components'
+
+function Workspace() {
+  const [open, setOpen] = useState(false)
+  const [confirm, setConfirm] = useState(false)
+  const [value, setValue] = useState('') // feature-owned data and dirty policy
+  const cancelRef = useRef<HTMLButtonElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  return (
+    <Window open={open} onOpenChange={(next, details) => {
+      if (!next && value !== '') {
+        details.cancel()
+        setConfirm(true)
+      } else setOpen(next)
+    }}>
+      <WindowTrigger ref={triggerRef} render={<Button />}>Open workspace</WindowTrigger>
+      <WindowContent>
+        <WindowHeader>
+          <WindowTitle>New message</WindowTitle>
+          <div className="flex gap-1">
+            <WindowMinimize /><WindowMaximize />
+            <WindowClose render={<Button variant="ghost" />}>Close</WindowClose>
+          </div>
+        </WindowHeader>
+        <WindowBody className="p-4">
+          <label htmlFor="workspace-value">Subject</label>
+          <Input id="workspace-value" value={value} onChange={e => setValue(e.target.value)} />
+          {/* Feature-owned editor, toolbar actions, optional panel and footer */}
+        </WindowBody>
+      </WindowContent>
+      <WindowMinimized aria-label="Minimized message">
+        <WindowRestore>New message</WindowRestore>
+        <WindowClose>Close</WindowClose>
+      </WindowMinimized>
+      <AlertDialog open={confirm} onOpenChange={setConfirm}>
+        <AlertDialogContent initialFocus={cancelRef} finalFocus={() => open ? true : triggerRef.current}>
+          <AlertDialogTitle>Close without saving?</AlertDialogTitle>
+          <AlertDialogDescription>There are unsaved changes.</AlertDialogDescription>
+          <AlertDialogClose render={<Button ref={cancelRef} variant="outline" />}>
+            Continue editing
+          </AlertDialogClose>
+          <AlertDialogClose render={<Button variant="destructive" />}
+            onClick={() => { setValue(''); setOpen(false) }}>
+            Close without saving
+          </AlertDialogClose>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Window>
+  )
+}
+```
+
+Keep the alert dialog within `Window` so Base UI coordinates the nested focus scopes. Use the least destructive action for `initialFocus`. When confirmation closes the parent, supply `finalFocus` pointing to the window trigger; when cancelling, allow the default to restore the requesting control. This avoids returning focus to a closed parent. Direct changes to controlled `open` are the feature's responsibility and intentionally bypass close requests; handle navigation and explicit discard there as well.
+
+The Window stories show normal, closed, minimized, maximized, confirmation, and optional-panel compositions. Their textarea, field expansion, dirty detection, local save indicator, and AI panel belong to the examples. Sending, rich text commands, scheduling, attachment upload, storage, and AI execution are not implemented by those demonstrations. On narrow screens the example provides an additional IA button to access the optional panel.
+
+### Lovable reference and icon mapping
+
+Inspected the open compose at [Lovable inbox](https://id-preview--c481592e-bf4d-4e71-a3cc-24366319ec79.lovable.app/inbox) on 2026-09-28 through computer use in the integrated browser. Visual observations and rendered DOM confirm a centered modal with black 80% overlay, 896 × 571px desktop surface, 49px header, 520px content area, 220px optional assistant panel at `md`, 1px boundaries, 16px desktop radius, shadow-lg, Inter, 14px body/title and 12px labels. Header padding is 10px/16px; field inputs are 32px high; body has 16px padding plus an 8px editor inset; panel has 12px padding and 4px gaps. Both palettes match the existing semantic tokens. At 390 × 844px it is 390 × 571px, centered with square corners and no assistant panel.
+
+Confirmed fields: Para, optional Cc/Bcc (expandable by keyboard), Assunto, and a contenteditable body. Controls: nine formatting/insert actions, Send, scheduling (Clock), Rascunho, save status, and eight AI actions. No formatting dropdown or scheduling menu was established during this inspection; only their entry controls are mapped. No email was sent, no draft was saved, no attachments or AI actions were invoked, and no existing typed content was edited. The initially observed inputs were empty and the editor contained its default prompt.
+
+The minus control produced no minimized state when activated by keyboard. A pointer interaction dismissed the blank surface without a minimized region; this is not evidence of a working minimization contract. The redundant built-in Close icon overlaps the custom X in the reference. No maximize control was present. A blank close worked without confirmation; dirty-close confirmation and preservation of edited content in the reference were not verified. Window minimization/restoration, maximization/restoration, safe close confirmation, constrained small-height scrolling and the mobile assistant entry are additions required by this task, not confirmed reference visuals. DS examples improve labels, focus indicators, title/description association and the overlapping close control; they use a native textarea to demonstrate composition rather than introducing an email editor into the DS.
+
+| Exact icon export | Function | Status |
+| --- | --- | --- |
+| `SquarePen` | Open compose | Added; matches the reference, unlike the existing Pencil/FilePenLine |
+| `Minus` | Minimize | Added |
+| `X` | Close | Reused |
+| `Bold` | Bold text | Added |
+| `Italic` | Italic text | Added |
+| `Underline` | Underlined text | Added |
+| `List` | Bulleted list | Added |
+| `ListOrdered` | Numbered list | Added |
+| `Link2` | Insert link | Added; reference uses Link2, not existing Link |
+| `Image` | Insert image | Added |
+| `Smile` | Insert emoji | Added |
+| `Paperclip` | Attach file | Reused |
+| `Send` | Send | Reused |
+| `Clock` | Schedule | Reused |
+| `Save` | Draft action | Added |
+| `Sparkles` | Assistant heading, persuasive rewrite, CTA | Reused |
+| `WandSparkles` | Write email, generate subject | Reused |
+| `ScanText` | Improve text, summarize | Added |
+| `SpellCheck` | Correct grammar | Added |
+| `Languages` | Translate | Added |
+| `Maximize2` | Maximize, restore minimized window | Added for new required behavior; absent from reference |
+| `Minimize2` | Restore normal size | Added for new required behavior; absent from reference |
+
+Every added icon is a named re-export of the exact `lucide-react` symbol, with no drawing substitutions.

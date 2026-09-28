@@ -5,6 +5,22 @@ export {
   AccordionItem,
   AccordionTrigger,
 } from './Accordion'
+export type {
+  AlertDialogCloseProps,
+  AlertDialogContentProps,
+  AlertDialogDescriptionProps,
+  AlertDialogProps,
+  AlertDialogTitleProps,
+  AlertDialogTriggerProps,
+} from './AlertDialog'
+export {
+  AlertDialog,
+  AlertDialogClose,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './AlertDialog'
 export type { ButtonProps } from './Button'
 export { Button, buttonVariants } from './Button'
 export type { DropdownMenuContentProps } from './DropdownMenu'
@@ -92,3 +108,29 @@ export {
   SidebarTrigger,
   useSidebar,
 } from './Sidebar'
+export type { ToolbarButtonProps, ToolbarProps, ToolbarSeparatorProps } from './Toolbar'
+export { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar'
+export type {
+  WindowCloseProps,
+  WindowContentProps,
+  WindowControlProps,
+  WindowMinimizedProps,
+  WindowOpenChangeDetails,
+  WindowProps,
+  WindowState,
+  WindowTriggerProps,
+} from './Window'
+export {
+  Window,
+  WindowBody,
+  WindowClose,
+  WindowContent,
+  WindowDescription,
+  WindowHeader,
+  WindowMaximize,
+  WindowMinimize,
+  WindowMinimized,
+  WindowRestore,
+  WindowTitle,
+  WindowTrigger,
+} from './Window'
