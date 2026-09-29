@@ -108,6 +108,8 @@ export {
   SidebarTrigger,
   useSidebar,
 } from './Sidebar'
+export type { ExternalToast, ToastClassnames, ToasterProps } from './Toaster'
+export { Toaster, toast } from './Toaster'
 export type { ToolbarButtonProps, ToolbarProps, ToolbarSeparatorProps } from './Toolbar'
 export { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar'
 export type {

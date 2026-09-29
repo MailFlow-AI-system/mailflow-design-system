@@ -86,6 +86,20 @@ Call `setTheme('system')` to follow the operating system. Explicit light or dark
 
 ## Components and icons
 
+### Toast notifications
+
+Mount one `Toaster` near the application root and call the exported `toast` API from feature code:
+
+```tsx
+import { Toaster, toast } from '@mailflow/ui/components'
+
+function App() {
+  return <><Toaster /><button onClick={() => toast.error('Unable to sign out')}>Sign out</button></>
+}
+```
+
+The default presentation uses Mailflow's existing surface, typography, radius, shadow and semantic success, primary/info, warning and destructive/error colors in light and dark palettes. `toast()` and `toast.success`, `toast.info`, `toast.warning`, `toast.error`, `toast.loading`, `toast.promise`, and `toast.custom` are available. `Toaster` accepts Sonner's full prop surface (`position`, `closeButton`, `icons`, `style`, `toastOptions`, and so on), and each toast accepts Sonner's options. Override `--mailflow-toast-success`, `--mailflow-toast-info`, `--mailflow-toast-warning`, or `--mailflow-toast-error` on the toaster for status accents, or use custom classes and `toast.custom` for an entirely different rendering. Applications own notification text and when to show it.
+
 ```tsx
 import { Button, Input } from '@mailflow/ui/components'
 import { ArrowRight } from '@mailflow/ui/icons'
