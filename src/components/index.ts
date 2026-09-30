@@ -21,6 +21,14 @@ export {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from './AlertDialog'
+export {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from './Breadcrumb'
 export type { ButtonProps } from './Button'
 export { Button, buttonVariants } from './Button'
 export type { DropdownMenuContentProps } from './DropdownMenu'
@@ -112,6 +120,14 @@ export type { ExternalToast, ToastClassnames, ToasterProps } from './Toaster'
 export { Toaster, toast } from './Toaster'
 export type { ToolbarButtonProps, ToolbarProps, ToolbarSeparatorProps } from './Toolbar'
 export { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar'
+export type {
+  BreadcrumbItemProps,
+  BreadcrumbLinkProps,
+  BreadcrumbListProps,
+  BreadcrumbPageProps,
+  BreadcrumbProps,
+  BreadcrumbSeparatorProps,
+} from './types/Breadcrumb'
 export type {
   WindowCloseProps,
   WindowContentProps,
