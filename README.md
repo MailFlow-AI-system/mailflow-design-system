@@ -86,6 +86,39 @@ Call `setTheme('system')` to follow the operating system. Explicit light or dark
 
 ## Components and icons
 
+### Email primitives (0.7.0)
+
+`Badge`, `Avatar`, and `Tabs` are exported with their prop types from both the package root and `@mailflow/ui/components`.
+
+| Component | Public contract | Email reference |
+| --- | --- | --- |
+| `Badge`, `badgeVariants`, `BadgeProps` | `default`, `secondary`, `destructive`, or `outline`; native span props, ref, `className`, and Base UI `render` composition. Passive by default; links and buttons retain their own semantics. | Secondary list labels use 16px height, 9px text and normal weight. Reader labels use 10px text. |
+| `Avatar`, `AvatarImage`, `AvatarFallback` | Styled Base UI avatar parts and corresponding `*Props` types. Images have native `src`/`alt` props; fallback children appear when no image is supplied or loading fails. | Compose `className` for 24px workspace, 28px sidebar user, 36px sender, or 40px reader avatars. |
+| `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | Styled Base UI tabs parts and corresponding `*Props` types. Selection may be controlled or uncontrolled; disabled state, orientation, keyboard navigation, and tab/panel associations belong to Base UI. | Compose a transparent 32px list with 28px triggers and 12px text for compact email tabs. |
+
+Avatar initials, identity colors, Badge labels, and Tabs filtering belong to the consumer. The components contain no email, routing, or authentication rules. Use an empty image `alt` or `aria-hidden` for an avatar that repeats an adjacent person's name; otherwise supply a useful accessible name.
+
+```tsx
+import { Avatar, AvatarFallback, Badge, Tabs, TabsContent, TabsList, TabsTrigger } from '@mailflow/ui/components'
+
+<Avatar className="size-9">
+  <AvatarFallback className="bg-primary/15 text-[11px] text-violet-700 dark:text-violet-300">AL</AvatarFallback>
+</Avatar>
+<Badge variant="secondary" className="h-4 px-1.5 text-[9px] font-normal">Work</Badge>
+<Tabs defaultValue="all">
+  <TabsList aria-label="Email views" className="h-8 bg-transparent p-0">
+    <TabsTrigger value="all" className="h-7 text-xs">Inbox</TabsTrigger>
+    <TabsTrigger value="unread" className="h-7 text-xs">Unread</TabsTrigger>
+  </TabsList>
+  <TabsContent value="all">All messages</TabsContent>
+  <TabsContent value="unread">Unread messages</TabsContent>
+</Tabs>
+```
+
+`AvatarImage` supports Base UI's `keepMounted` option. Image and fallback share the same box; a loading or failed mounted image stays hidden while the fallback remains visible.
+
+Storybook demonstrates compact labels, image and fallback states, reference avatar dimensions, and controlled, disabled, and vertical tabs. Its theme control previews each example in both palettes. These examples are visual compositions, not an email feature implementation.
+
 ### Toast notifications
 
 Mount one `Toaster` near the application root and call the exported `toast` API from feature code:
@@ -171,6 +204,8 @@ Consumers learn about changes through the pull request, version changelog, and G
 When a consumer integrates a package change, validate it through real imports there: production builds, first theme paint, reload persistence, navigation, keyboard controls, label association, font loading, and absence of hydration errors. A Storybook build alone does not validate an application integration.
 
 ## Listening
+
+Sprint 03 adds Badge, Avatar, and Tabs from concrete email references instead of extending the catalog with Table or an invented RBAC screen. Avatar remains a generic image/fallback primitive; applications own initials and deterministic identity colors. The catalog retains the reference's saturated avatar backgrounds and uses darker text in light mode for readable initials. Email sizes remain `className` compositions, avoiding additional size and product-state APIs.
 
 A separate source package with exact Git tag pinning supports independently managed frontends without introducing a registry release process. Releasing the design system before consumer integration keeps the reviewed package contract and application dependency aligned. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
 

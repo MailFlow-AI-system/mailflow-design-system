@@ -21,6 +21,10 @@ export {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from './AlertDialog'
+export type { AvatarFallbackProps, AvatarImageProps, AvatarProps } from './Avatar'
+export { Avatar, AvatarFallback, AvatarImage } from './Avatar'
+export type { BadgeProps } from './Badge'
+export { Badge, badgeVariants } from './Badge'
 export {
   Breadcrumb,
   BreadcrumbItem,
@@ -116,6 +120,8 @@ export {
   SidebarTrigger,
   useSidebar,
 } from './Sidebar'
+export type { TabsContentProps, TabsListProps, TabsProps, TabsTriggerProps } from './Tabs'
+export { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs'
 export type { ExternalToast, ToastClassnames, ToasterProps } from './Toaster'
 export { Toaster, toast } from './Toaster'
 export type { ToolbarButtonProps, ToolbarProps, ToolbarSeparatorProps } from './Toolbar'
