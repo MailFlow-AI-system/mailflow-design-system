@@ -119,6 +119,29 @@ import { Avatar, AvatarFallback, Badge, Tabs, TabsContent, TabsList, TabsTrigger
 
 Storybook demonstrates compact labels, image and fallback states, reference avatar dimensions, and controlled, disabled, and vertical tabs. Its theme control previews each example in both palettes. These examples are visual compositions, not an email feature implementation.
 
+### Checkbox (0.8.0)
+
+`Checkbox` is exported with `CheckboxProps` from both the package root and `@mailflow/ui/components`.
+
+| Component | Public contract | Reference |
+| --- | --- | --- |
+| `Checkbox`, `CheckboxProps` | Styled Base UI checkbox: controlled (`checked`, `onCheckedChange`) or uncontrolled (`defaultChecked`), `indeterminate` for the mixed state, `disabled`, `id` for native `<label htmlFor>` association, ref, and `className` as a string or state function. Keyboard activation uses Space. | Lovable checkbox: 16px, `rounded-sm`, `primary` border and fill, `ring-1` focus, 50% opacity when disabled. |
+
+The checkbox has no visible text of its own. Give every instance an accessible name with `aria-label` or a native `<label htmlFor>`; a row checkbox should name the item it selects. Selection state, counts, "select all" behavior, and selected-row styling belong to the consumer. The `indeterminate` state is an addition for partial "select all" controls and is not in the reference.
+
+```tsx
+import { Checkbox } from '@mailflow/ui/components'
+
+<Checkbox
+  aria-label="Select all messages"
+  checked={allSelected}
+  indeterminate={someSelected}
+  onCheckedChange={(checked) => setAll(checked)}
+/>
+```
+
+Storybook demonstrates the states, a native label, and a message list with per-row selection and a select-all control. Like the email primitives, these examples are visual compositions, not an email feature implementation.
+
 ### Toast notifications
 
 Mount one `Toaster` near the application root and call the exported `toast` API from feature code:
@@ -208,6 +231,8 @@ When a consumer integrates a package change, validate it through real imports th
 Sprint 03 adds Badge, Avatar, and Tabs from concrete email references instead of extending the catalog with Table or an invented RBAC screen. Avatar remains a generic image/fallback primitive; applications own initials and deterministic identity colors. The catalog retains the reference's saturated avatar backgrounds and uses darker text in light mode for readable initials. Email sizes remain `className` compositions, avoiding additional size and product-state APIs.
 
 A separate source package with exact Git tag pinning supports independently managed frontends without introducing a registry release process. Releasing the design system before consumer integration keeps the reviewed package contract and application dependency aligned. A monorepo migration and generated JavaScript distribution would add work beyond the current scope.
+
+Checkbox is added alone because the Lovable reference has no selection toolbar or selected-row treatment; applications compose those from existing parts and keep the prototype's active-row style for an open message. The mixed state is the only addition beyond the reference.
 
 Base UI supplies interactive primitives while shadcn supplies editable structure, keeping one MailFlow implementation per shared control. More components and product patterns can follow when screens require them.
 
