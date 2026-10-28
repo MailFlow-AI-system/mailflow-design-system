@@ -35,6 +35,8 @@ export {
 } from './Breadcrumb'
 export type { ButtonProps } from './Button'
 export { Button, buttonVariants } from './Button'
+export type { CheckboxProps } from './Checkbox'
+export { Checkbox } from './Checkbox'
 export type { DropdownMenuContentProps } from './DropdownMenu'
 export {
   DropdownMenu,
