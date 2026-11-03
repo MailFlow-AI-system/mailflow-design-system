@@ -119,6 +119,18 @@ import { Avatar, AvatarFallback, Badge, Tabs, TabsContent, TabsList, TabsTrigger
 
 Storybook demonstrates compact labels, image and fallback states, reference avatar dimensions, and controlled, disabled, and vertical tabs. Its theme control previews each example in both palettes. These examples are visual compositions, not an email feature implementation.
 
+### Label picker (0.9.0)
+
+`LabelPicker` combines search, label selection, and creation in one Base UI combobox. The package root and `@mailflow/ui/components` export the component and the `LabelPickerItem`, `LabelPickerProps`, and `LabelPickerResults` types. Give the input an accessible name through `aria-label`.
+
+- Keep the selected label in `value` and update it in `onValueChange`. The component returns a single persisted label per selection. The consumer owns any collection of labels applied to a message.
+- Keep `query` and `results` in the consumer. In `onQueryChange`, reset the cursor, clear results, and request the first five matches for the new query. Cancel or discard superseded requests, including when the same query is entered again.
+- Populate `results` with the original input in `query`, the accumulated `items`, `hasMore`, and the globally exact matching label in `exactMatch`. Return `exactMatch: null` only after checking the full catalog for an exact name.
+- When `onLoadMore` runs for the current query, mark `loadingMore`, request the next five matches, and append them to `items`. The picker requests more near the end of the scroll area or when keyboard navigation highlights the last loaded label.
+- In `onCreate`, persist the trimmed name and update the consumer's label collection with the returned item. Resolve with that same item so the picker can select it. Reject the promise on failure to keep the search and allow retry.
+
+The Storybook examples exercise a paginated catalog and a creation failure followed by a successful retry.
+
 ### Checkbox (0.8.0)
 
 `Checkbox` is exported with `CheckboxProps` from both the package root and `@mailflow/ui/components`.

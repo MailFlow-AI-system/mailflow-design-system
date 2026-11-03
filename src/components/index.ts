@@ -57,6 +57,8 @@ export {
 } from './DropdownMenu'
 export type { InputProps } from './Input'
 export { Input } from './Input'
+export type { LabelPickerItem, LabelPickerProps, LabelPickerResults } from './LabelPicker'
+export { LabelPicker } from './LabelPicker'
 export type {
   SelectContentProps,
   SelectItemProps,
