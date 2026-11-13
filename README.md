@@ -119,6 +119,37 @@ import { Avatar, AvatarFallback, Badge, Tabs, TabsContent, TabsList, TabsTrigger
 
 Storybook demonstrates compact labels, image and fallback states, reference avatar dimensions, and controlled, disabled, and vertical tabs. Its theme control previews each example in both palettes. These examples are visual compositions, not an email feature implementation.
 
+### Tooltips, empty states, and message action icons (0.10.0)
+
+`TooltipProvider`, `Tooltip`, `TooltipTrigger`, and `TooltipContent` label icon-only controls on hover and keyboard focus. Compose the trigger with `render` so the control keeps its own component and handlers. A tooltip is not an accessible name, so the trigger keeps its `aria-label`. Mount one `TooltipProvider` near the application root.
+
+```tsx
+import { Tooltip, TooltipContent, TooltipTrigger, ToolbarButton } from '@mailflow/ui/components'
+import { Archive } from '@mailflow/ui/icons'
+
+<Tooltip>
+  <TooltipTrigger render={<ToolbarButton aria-label="Archive" onClick={archive} />}>
+    <Archive aria-hidden="true" />
+  </TooltipTrigger>
+  <TooltipContent>Archive</TooltipContent>
+</Tooltip>
+```
+
+`Empty`, `EmptyHeader`, `EmptyMedia`, `EmptyTitle`, `EmptyDescription`, and `EmptyContent` compose a centered empty state for a list or panel. `EmptyMedia` is decorative and hidden from assistive technology. `EmptyTitle` renders a `div` by default; pass `render={(props) => <h2 {...props} />}` for the heading level that fits the page.
+
+```tsx
+<Empty>
+  <EmptyHeader>
+    <EmptyMedia><Archive /></EmptyMedia>
+    <EmptyTitle render={(props) => <h2 {...props} />}>No archived messages</EmptyTitle>
+    <EmptyDescription>Messages you archive leave the Inbox and wait here.</EmptyDescription>
+  </EmptyHeader>
+  <EmptyContent><Button size="sm" variant="outline">Go to Inbox</Button></EmptyContent>
+</Empty>
+```
+
+`Archive`, `ArchiveRestore`, `MailOpen`, `RotateCcw`, and `StarOff` join the icon set for message actions. Confirmations for moving messages to Trash and deleting them permanently are `AlertDialog` compositions, shown in its stories with initial focus on Cancel. Folder rules, action copy, and optimistic updates belong to the application.
+
 ### Label picker (0.9.0)
 
 `LabelPicker` combines search, label selection, and creation in one Base UI combobox. The package root and `@mailflow/ui/components` export the component and the `LabelPickerItem`, `LabelPickerProps`, and `LabelPickerResults` types. Give the input an accessible name through `aria-label`.
