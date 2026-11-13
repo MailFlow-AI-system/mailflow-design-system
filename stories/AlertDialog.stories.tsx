@@ -37,3 +37,54 @@ export const Confirmation: Story = {
     )
   },
 }
+
+function MessageConfirmation({
+  trigger,
+  title,
+  description,
+  confirm,
+}: {
+  trigger: string
+  title: string
+  description: string
+  confirm: string
+}) {
+  const cancelRef = useRef<HTMLButtonElement>(null)
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger render={<Button variant="outline" />}>{trigger}</AlertDialogTrigger>
+      <AlertDialogContent initialFocus={cancelRef}>
+        <AlertDialogTitle>{title}</AlertDialogTitle>
+        <AlertDialogDescription>{description}</AlertDialogDescription>
+        <div className="flex flex-wrap justify-end gap-2">
+          <AlertDialogClose render={<Button ref={cancelRef} variant="outline" />}>
+            Cancel
+          </AlertDialogClose>
+          <AlertDialogClose render={<Button variant="destructive" />}>{confirm}</AlertDialogClose>
+        </div>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+
+export const MoveMessagesToTrash: Story = {
+  render: () => (
+    <MessageConfirmation
+      trigger="Delete 3 messages"
+      title="Move 3 messages to Trash?"
+      description="You can restore them from Trash until they are deleted permanently."
+      confirm="Move to Trash"
+    />
+  ),
+}
+
+export const DeleteMessagesPermanently: Story = {
+  render: () => (
+    <MessageConfirmation
+      trigger="Delete permanently"
+      title="Delete 3 messages permanently?"
+      description="These messages will be removed from Trash. This cannot be undone."
+      confirm="Delete permanently"
+    />
+  ),
+}
